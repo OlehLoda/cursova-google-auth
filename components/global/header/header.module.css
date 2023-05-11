@@ -1,0 +1,89 @@
+.header {
+  background: #444444;
+
+  display: grid;
+  grid-auto-flow: column;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 83px;
+
+  position: sticky;
+  top: 0;
+  z-index: 100;
+
+  padding: 30px;
+}
+
+.header > nav {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 50px;
+}
+
+.header > nav:last-of-type {
+  justify-content: end;
+}
+
+.header > nav > * {
+  cursor: pointer;
+
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-size: 18px;
+  line-height: 22px;
+
+  color: #ffffff;
+
+  display: grid;
+  align-items: center;
+  grid-auto-flow: column;
+  justify-content: center;
+  gap: 12px;
+}
+
+.active {
+  text-decoration: underline;
+}
+
+.userCardWrap {
+  position: absolute;
+  z-index: 101;
+
+  top: 100%;
+  right: 0%;
+
+  overflow: hidden;
+  width: 0px;
+  height: 420px;
+
+  background: white;
+  border: 0px solid transparent;
+
+  transition: width 0.3s ease-in-out, border 0s 0.3s;
+}
+
+.userCardWrap * {
+  white-space: nowrap;
+}
+
+.userCardWrap.opened {
+  width: 320px;
+  border: 3px solid #ff8282;
+  transition: width 0.3s ease-in-out, border 0s;
+}
+
+.callBackWrap {
+  display: none;
+
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0, 0, 0, 0.8);
+}
+
+.callBackWrap.opened {
+  display: grid;
+  place-content: center;
+}

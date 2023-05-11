@@ -1,0 +1,23 @@
+.wrap {
+  display: grid;
+  gap: 100px;
+  justify-items: center;
+
+  max-width: 1380px;
+  margin: 0 auto;
+}
+
+.wrap > h2 {
+  font-style: normal;
+  font-weight: 700;
+  font-size: 22px;
+  line-height: 27px;
+
+  color: #000000;
+}
+
+.wrap > div {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 100px;
+}
