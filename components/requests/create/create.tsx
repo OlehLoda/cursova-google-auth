@@ -1,13 +1,15 @@
-import PlusIcon from "../../../public/icons/plus";
 import s from "./create.module.css";
+import PlusIcon from "../../../public/icons/plus";
+import { ModalType } from "@/components/context/types";
+import { useGlobalContext } from "@/components/context/context";
 
-interface Props {
-  setActive: (value: boolean) => void;
-}
+export default function Create() {
+  const { setModal } = useGlobalContext();
 
-export default function Create({ setActive }: Props) {
+  const createRequestForm = () => setModal({ type: ModalType.CREATE_REQUEST_FORM });
+
   return (
-    <div className={s.create} onClick={() => setActive(true)}>
+    <div className={s.create} onClick={createRequestForm}>
       <p>Оформити заявку!</p>
       <PlusIcon />
     </div>

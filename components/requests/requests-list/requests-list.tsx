@@ -1,30 +1,31 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useState } from "react";
 import s from "./requests-list.module.css";
-import { IRequest } from "../requests";
 import AvatarIcon from "../../../public/icons/avatar";
+import { IRequest } from "@/components/context/types";
 import LoadMoreIcon from "../../../public/icons/load-more";
+import { useGlobalContext } from "@/components/context/context";
 
-interface Props {
-  requests: IRequest[] | null;
-  setRequests: Dispatch<SetStateAction<IRequest[] | null>>;
-}
-
-export default function RequestsList({ requests, setRequests }: Props) {
+export default function RequestsList() {
+  const {
+    state: { balance, requests },
+    setRequest,
+    setBalance,
+  } = useGlobalContext();
   const [quantity, setQuantity] = useState<number>(2);
 
-  const completeRequest = (request: IRequest) =>
-    setRequests((prev) => {
-      const new_data = prev
-        ? [...prev.filter((r) => r !== request)].length !== 0
-          ? [...prev.filter((r) => r !== request)]
-          : null
-        : null;
-      localStorage.setItem("requests", JSON.stringify(new_data));
+  const completeRequest = (request: IRequest) => {
+    const new_data = requests
+      ? [...requests.filter((r) => r !== request)].length !== 0
+        ? [...requests.filter((r) => r !== request)]
+        : null
+      : null;
 
-      const old_balance = JSON.parse(localStorage.getItem("balance") || "50");
-      localStorage.setItem("balance", JSON.stringify(old_balance + request.price));
-      return new_data;
-    });
+    setRequest(new_data);
+
+    const new_balance = balance + request.price;
+
+    setBalance(new_balance);
+  };
 
   return (
     <div className={s.requestsList}>
@@ -32,7 +33,7 @@ export default function RequestsList({ requests, setRequests }: Props) {
       <div className={s.wrapRequests}>
         {requests ? (
           requests.map((request, index) => {
-            const { name, title, description, rating, price } = request;
+            const { name, title, description, priority, price } = request;
             if (index < quantity)
               return (
                 <div key={index} className={s.card}>
@@ -55,7 +56,7 @@ export default function RequestsList({ requests, setRequests }: Props) {
                     </div>
                     <div>
                       <p>Терміновість</p>
-                      <p>{rating}/10</p>
+                      <p>{priority}/10</p>
                     </div>
                     <button onClick={() => completeRequest(request)}>Відгукнутися</button>
                   </div>

@@ -16,8 +16,23 @@
   color: #000000;
 }
 
+.image {
+  width: 100%;
+  height: auto;
+  object-fit: cover;
+}
+
 .wrap > div {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(auto-fill, minmax(540px, 1fr));
   gap: 100px;
+}
+.wrap > div > p {
+  padding: 20px;
+}
+
+@media screen and (max-width: 1024px) {
+  .wrap {
+    gap: 30px;
+  }
 }

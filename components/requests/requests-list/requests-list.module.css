@@ -164,3 +164,24 @@
   font-size: 32px;
   min-height: 164px;
 }
+
+@media screen and (max-width: 1024px) {
+  .vr {
+    width: 100%;
+    height: 1px;
+  }
+
+  .card {
+    height: fit-content;
+    padding: 24px;
+    gap: 24px;
+    grid-template-columns: 1fr;
+    grid-template-rows: 1fr;
+    grid-template-areas:
+      "name"
+      "hr"
+      "description"
+      "vr"
+      "info";
+  }
+}

@@ -1,16 +1,15 @@
 .footer {
   background: #444444;
+  padding: 65px 20px;
 }
 
-.top {
+.content {
   display: grid;
   grid-auto-flow: column;
   justify-content: space-between;
 
   max-width: 1380px;
   margin: 0 auto;
-
-  padding: 90px 0 65px;
 }
 
 .left {
@@ -69,4 +68,39 @@
   line-height: 22px;
 
   color: #ffffff;
+}
+
+@media screen and (max-width: 1024px) {
+  .footer {
+    padding: 30px 15px;
+  }
+
+  .content {
+    grid-auto-flow: row;
+    justify-items: unset;
+    justify-content: unset;
+    text-align: left;
+    gap: 20px;
+  }
+
+  .left {
+    grid-auto-flow: row;
+    gap: 20px;
+  }
+
+  .left > div {
+    gap: 20px;
+    align-content: start;
+  }
+
+  .left > hr {
+    width: 100%;
+    height: 1px;
+  }
+
+  .right {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    text-align: left;
+  }
 }

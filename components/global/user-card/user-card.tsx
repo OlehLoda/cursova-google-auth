@@ -1,74 +1,57 @@
 "use client";
-import { DefaultSession } from "next-auth";
-import s from "./user-card.module.css";
-import { useSession } from "next-auth/react";
-import AvatarIcon from "@/public/icons/avatar";
 import Image from "next/image";
-import { useEffect, useState } from "react";
+import s from "./user-card.module.css";
+import AvatarIcon from "@/public/icons/avatar";
 import ExclamationIcon from "@/public/icons/exclamation";
-import placeholder from "../../../public/photos/man.png";
+import { useGlobalContext } from "@/components/context/context";
+import { ModalType } from "@/components/context/types";
 
 export default function UserCard() {
-  const { data: session } = useSession();
-  const { user }: { user?: DefaultSession["user"] } = session || {};
-  const { name = "Vladyslav", email = "vladyslav@gmail.com", image } = user || {};
-
-  const [balance, setBalance] = useState<number>((name?.split(" ")[0].length || 2) * 50);
+  const {
+    state: { current_user, modal },
+    setModal,
+    setBalance,
+  } = useGlobalContext();
+  if (!current_user) return <></>;
+  const { name, email, image, balance } = current_user;
 
   const withdraw = () => {
-    setBalance((prev) => {
-      const newBalance = prev - 50;
-      localStorage.setItem("balance", JSON.stringify(newBalance));
-      return prev !== 0 ? newBalance : prev;
-    });
+    const newBalance = balance !== 0 ? balance - 50 : 0;
+    return setBalance(newBalance);
   };
 
   const deposit = () => {
-    setBalance((prev) => {
-      const newBalance = prev + 50;
-      localStorage.setItem("balance", JSON.stringify(newBalance));
-      return newBalance;
-    });
+    const newBalance = balance + 50;
+    return setBalance(newBalance);
   };
 
-  useEffect(() => {
-    const data = localStorage.getItem("balance")
-      ? JSON.parse(localStorage.getItem("balance")!)
-      : null;
-    if (data) {
-      setBalance(data);
-    } else localStorage.setItem("balance", JSON.stringify(balance));
-  }, []);
+  const close = () => setModal(null);
 
-  return (
-    <div className={s.userCard}>
-      {image ? (
-        <Image
-          width={74}
-          height={74}
-          src={image}
-          alt="Google avatar"
-          className={s.avatar}
-          placeholder="blur"
-          blurDataURL={placeholder.src}
-        />
-      ) : (
-        <AvatarIcon className={s.avatar} width={74} height={74} />
-      )}
-      <h3 className={s.name}>{name}</h3>
-      <p className={s.email}>{email}</p>
-      <div className={s.balance}>
-        <p>Баланс</p>
-        <p>{balance} UAH</p>
-      </div>
-      <div className={s.buttons}>
-        <button onClick={withdraw}>Вивести</button>
-        <button onClick={deposit}>Поповнити</button>
-      </div>
-      <div className={s.notifications}>
-        <p>Немає активних сповіщень</p>
-        <ExclamationIcon />
+  return modal?.type === ModalType.USER_CARD ? (
+    <div className={s.bg + " " + s.weight} onClick={close}>
+      <div className={s.userCard} onClick={(e) => e.stopPropagation()}>
+        {image ? (
+          <Image width={74} height={74} src={image} alt="Google avatar" className={s.avatar} />
+        ) : (
+          <AvatarIcon className={s.avatar} width={74} height={74} />
+        )}
+        <h3 className={s.name}>{name}</h3>
+        <p className={s.email}>{email}</p>
+        <div className={s.balance}>
+          <p>Баланс</p>
+          <p>{balance} UAH</p>
+        </div>
+        <div className={s.buttons}>
+          <button onClick={withdraw}>Вивести</button>
+          <button onClick={deposit}>Поповнити</button>
+        </div>
+        <div className={s.notifications}>
+          <p>Немає активних сповіщень</p>
+          <ExclamationIcon />
+        </div>
       </div>
     </div>
+  ) : (
+    <></>
   );
 }

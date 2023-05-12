@@ -13,7 +13,7 @@ export default function WhyUs() {
           cupiditate non provident, similique sunt in culpa qui officia deserunt mollitia animi, id
           est laborum et dolorum fuga. Et harum quidem rerum facilis est et expedita distinctio.{" "}
         </p>
-        <Image src={photo} alt="photo" priority />
+        <Image src={photo} alt="photo" priority className={s.image} />
       </div>
     </div>
   );

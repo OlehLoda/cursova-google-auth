@@ -1,10 +1,10 @@
 .wrap {
   display: grid;
   gap: 100px;
-  justify-items: center;
 
   max-width: 1380px;
   margin: 100px auto 145px;
+  padding: 0 20px;
 }
 
 .wrap > h2 {
@@ -12,6 +12,7 @@
   font-weight: 700;
   font-size: 22px;
   line-height: 27px;
+  text-align: center;
 
   color: #000000;
 }

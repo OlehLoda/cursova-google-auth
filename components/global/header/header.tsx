@@ -1,12 +1,15 @@
 "use client";
-import { usePathname } from "next/navigation";
-import s from "./header.module.css";
 import Link from "next/link";
+import s from "./header.module.css";
+import { signOut } from "next-auth/react";
+import { ReactNode, Fragment } from "react";
+import { usePathname } from "next/navigation";
 import UserCard from "../user-card/user-card";
-import { ReactNode, useRef, MouseEvent, Fragment } from "react";
+import CallBack from "../call-back/call-back";
 import ProfileIcon from "@/public/icons/profile";
 import CallBackIcon from "@/public/icons/call-back";
-import CallBack from "../call-back/call-back";
+import { ModalType } from "@/components/context/types";
+import { useGlobalContext } from "@/components/context/context";
 
 interface INavTab {
   children: ReactNode;
@@ -17,11 +20,22 @@ export default function Header() {
   const pathname = usePathname();
   const is_active = (link: string) => (pathname === link ? s.active : "");
 
-  const userCardRef = useRef<HTMLDivElement>(null);
-  const callBackRef = useRef<HTMLDivElement>(null);
+  const {
+    state: { modal, current_user },
+    setModal,
+    setCurrentUser,
+  } = useGlobalContext();
 
-  const openUserCard = () => userCardRef.current?.classList.toggle(s.opened);
-  const openCallBack = () => callBackRef.current?.classList.toggle(s.opened);
+  const toggleUserCard = () =>
+    modal?.type !== ModalType.USER_CARD ? setModal({ type: ModalType.USER_CARD }) : setModal(null);
+
+  const toggleCallBack = () =>
+    modal?.type !== ModalType.CALL_BACK ? setModal({ type: ModalType.CALL_BACK }) : setModal(null);
+
+  const logOut = () => {
+    signOut();
+    setCurrentUser(null);
+  };
 
   const navMap: INavTab[][] = [
     [
@@ -41,43 +55,57 @@ export default function Header() {
     [
       {
         children: (
-          <div onClick={openCallBack}>
+          <div onClick={toggleCallBack}>
             Зворотній зв’язок
             <CallBackIcon />
           </div>
         ),
       },
       {
-        children: <>Вхід</>,
-        href: "/login",
+        children: current_user ? (
+          <div onClick={logOut}>Вихід</div>
+        ) : (
+          <>
+            Вхід
+            <ProfileIcon />
+          </>
+        ),
+        href: current_user ? undefined : "/login",
       },
       {
-        children: <ProfileIcon onClick={openUserCard} />,
+        children: current_user ? <ProfileIcon onClick={toggleUserCard} /> : <></>,
       },
     ],
   ];
 
+  const logo = navMap[0][0];
+
   return (
     <header className={s.header}>
-      {navMap.map((nav, index) => (
-        <nav key={index}>
-          {nav.map(({ children, href }, index) => {
-            return href ? (
-              <Link href={href} className={is_active(href)} key={index}>
-                {children}
-              </Link>
-            ) : (
-              <Fragment key={index}>{children}</Fragment>
-            );
-          })}
-        </nav>
-      ))}
-      <div className={s.userCardWrap} ref={userCardRef}>
-        <UserCard />
+      <Link href={logo.href!} className={is_active(logo.href!) + " " + s.mobileLogo}>
+        {logo.children}
+      </Link>
+      <div>
+        {navMap.map((nav, index) => (
+          <nav key={index}>
+            {nav.map(({ children, href }, index) => {
+              return href ? (
+                <Link href={href} className={is_active(href)} key={index}>
+                  {children}
+                </Link>
+              ) : (
+                <Fragment key={index}>{children}</Fragment>
+              );
+            })}
+          </nav>
+        ))}
       </div>
-      <div className={s.callBackWrap} ref={callBackRef}>
-        <CallBack />
-      </div>
+      <UserCard />
+      <CallBack />
+
+      <label className={s.burger}>
+        <input type="checkbox" />
+      </label>
     </header>
   );
 }
