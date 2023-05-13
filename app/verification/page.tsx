@@ -6,7 +6,7 @@ import Verification from "@/components/verification/verification";
 
 export default function VerificationPage() {
   const {
-    state: { current_user },
+    state: { current_user_email },
   } = useGlobalContext();
-  return current_user ? <Verification /> : <Empty />;
+  return current_user_email ? <Verification /> : <Empty />;
 }

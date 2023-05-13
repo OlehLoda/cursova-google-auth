@@ -5,9 +5,10 @@ import { IRequest, ModalType } from "@/components/context/types";
 
 export default function Form() {
   const {
-    state: { requests, modal },
+    state: { modal },
     setModal,
-    setRequest,
+    changeUserData,
+    findUserData,
   } = useGlobalContext();
 
   const [priority, setPriority] = useState(0);
@@ -37,11 +38,13 @@ export default function Form() {
       price,
     } as IRequest;
 
-    const new_data = requests ? [...requests, final_data] : [final_data];
+    const new_requests = findUserData("requests")
+      ? [...findUserData("requests"), final_data]
+      : [final_data];
 
-    setRequest(new_data);
+    changeUserData({ requests: new_requests });
 
-    close();
+    return close();
   };
 
   const close = () => setModal(null);
@@ -55,8 +58,20 @@ export default function Form() {
         onClick={(e) => e.stopPropagation()}
       >
         <h2>Заповніть бланк для опрацювання проблеми</h2>
-        <input required placeholder="Ім’я" name="name" type="text" className={s.input} />
-        <input required placeholder="Тема" name="title" type="text" className={s.input} />
+        <input
+          required
+          placeholder="Ім’я"
+          name="name"
+          type="text"
+          className={s.input}
+        />
+        <input
+          required
+          placeholder="Тема"
+          name="title"
+          type="text"
+          className={s.input}
+        />
         <textarea
           required
           rows={3}

@@ -2,20 +2,22 @@
 import { FormEvent } from "react";
 import s from "./call-back.module.css";
 import { useGlobalContext } from "@/components/context/context";
-import { ModalType } from "@/components/context/types";
+import { ICallback, ModalType } from "@/components/context/types";
 
 export default function CallBack() {
   const {
     state: { modal },
     setModal,
+    findUserData,
+    changeUserData,
   } = useGlobalContext();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const data: Record<string, string | number> = {};
-
     const elements = Array.from(e.currentTarget.elements);
+
+    const data = {} as ICallback;
 
     elements
       .filter((e) => (e as HTMLInputElement).name.length > 0)
@@ -24,11 +26,15 @@ export default function CallBack() {
         data[name] = value;
       });
 
-    const final_data = {
-      ...data,
-    };
+    const callbacks = findUserData("callbacks")
+      ? [...findUserData("callbacks"), data]
+      : [data];
 
-    return final_data;
+    changeUserData({ callbacks });
+
+    alert("Ваше звернення збережене");
+
+    return setModal(null);
   };
 
   const close = () => setModal(null);
@@ -42,15 +48,27 @@ export default function CallBack() {
         onClick={(e) => e.stopPropagation()}
       >
         <h2>Зворотній зв’язок</h2>
-        <input required placeholder="Ім’я" name="name" type="text" className={s.input} />
-        <input required placeholder="Пошти" name="title" type="text" className={s.input} />
+        <input
+          required
+          placeholder="Ім’я"
+          name="name"
+          type="text"
+          className={s.input}
+        />
+        <input
+          required
+          placeholder="Пошта"
+          name="email"
+          type="email"
+          className={s.input}
+        />
         <textarea
           rows={3}
           required
           maxLength={240}
           name="description"
           className={s.input}
-          placeholder="Проблематика"
+          placeholder="Опис проблеми"
         />
         <button type="submit" className={s.submit}>
           Надіслати

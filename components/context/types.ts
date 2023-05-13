@@ -16,8 +16,8 @@ export type Actions = ActionMap<Payload>[keyof ActionMap<Payload>];
 
 export interface IInitialState {
   modal: IModal | null;
-  registered_users: IUser[];
-  current_user: IUser | null;
+  registered_users: IUser[] | null;
+  current_user_email: string | null;
 }
 
 export interface IUser {
@@ -27,8 +27,10 @@ export interface IUser {
   password_repeat?: string;
   name: string;
   image: string;
-  requests: IRequest[] | null;
   balance: number;
+  requests: IRequest[] | null;
+  verifications: IVerification[] | null;
+  callbacks: ICallback[] | null;
 }
 
 export interface IContext {
@@ -36,19 +38,33 @@ export interface IContext {
   dispatch: Dispatch<Actions>;
   setModal: (payload: IModal | null) => void;
   findUser: (payload: string) => IUser | undefined;
-  setBalance: (payload: number) => void;
-  setRequest: (payload: IRequest[] | null) => void;
   registerUser: (payload: IUser) => void;
-  setCurrentUser: (payload: IUser | null) => void;
-  changePassword: (payload: IChangePasswordDTO) => void;
+  changeUserData: (payload: Partial<IUser>) => void;
+  findUserData: (payload: string) => any | undefined;
+  setCurrentUserEmail: (payload: string | null) => void;
 }
 
 export interface IRequest {
+  [key: string]: string | number;
   name: string;
   title: string;
   description: string;
   priority: number;
   price: number;
+}
+
+export interface ICallback {
+  [key: string]: string;
+  name: string;
+  email: string;
+  description: string;
+}
+
+export interface IVerification {
+  [key: string]: string | File;
+  email: string;
+  role: string;
+  certificate: File;
 }
 
 export enum ModalType {

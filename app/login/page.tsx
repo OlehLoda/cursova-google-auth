@@ -8,16 +8,16 @@ import man from "../../public/photos/man.png";
 
 export default function LoginPage() {
   const {
-    state: { current_user },
+    state: { current_user_email },
     findUser,
     registerUser,
-    setCurrentUser,
+    setCurrentUserEmail,
   } = useGlobalContext();
   const router = useRouter();
   const { data: session } = useSession();
 
   useEffect(() => {
-    if (current_user) {
+    if (current_user_email) {
       return router.push("/");
     } else if (session) {
       const { name, email, image } = session.user || {};
@@ -25,7 +25,7 @@ export default function LoginPage() {
       const user_exist = findUser(email as string);
 
       if (user_exist) {
-        setCurrentUser(user_exist);
+        setCurrentUserEmail(user_exist.email);
         return router.push("/");
       }
 
@@ -35,15 +35,17 @@ export default function LoginPage() {
         password_repeat: "11111111",
         name: name || "",
         image: image || man.src,
-        requests: null,
         balance: 0,
+        requests: null,
+        callbacks: null,
+        verifications: null,
       };
 
       registerUser(new_user);
-      setCurrentUser(new_user);
+      setCurrentUserEmail(new_user.email);
       return router.push("/");
     } else return;
-  }, [current_user, session]);
+  }, [current_user_email, session]);
 
   return <LogIn />;
 }

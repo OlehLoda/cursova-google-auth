@@ -7,10 +7,15 @@ import { useGlobalContext } from "@/components/context/context";
 
 export default function RequestsList() {
   const {
-    state: { balance, requests },
-    setRequest,
-    setBalance,
+    state: { current_user_email },
+    findUserData,
+    changeUserData,
   } = useGlobalContext();
+  if (!current_user_email) return <></>;
+
+  const balance: number = findUserData("balance"),
+    requests: IRequest[] = findUserData("requests");
+
   const [quantity, setQuantity] = useState<number>(2);
 
   const completeRequest = (request: IRequest) => {
@@ -20,11 +25,10 @@ export default function RequestsList() {
         : null
       : null;
 
-    setRequest(new_data);
-
     const new_balance = balance + request.price;
 
-    setBalance(new_balance);
+    changeUserData({ requests: new_data });
+    changeUserData({ balance: new_balance });
   };
 
   return (
@@ -58,7 +62,9 @@ export default function RequestsList() {
                       <p>Терміновість</p>
                       <p>{priority}/10</p>
                     </div>
-                    <button onClick={() => completeRequest(request)}>Відгукнутися</button>
+                    <button onClick={() => completeRequest(request)}>
+                      Відгукнутися
+                    </button>
                   </div>
                 </div>
               );

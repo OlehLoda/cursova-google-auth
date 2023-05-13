@@ -51,9 +51,11 @@
   text-decoration: underline;
 }
 
+.burger ,
 .mobileLogo {
   display: none;
 }
+
 
 @media screen and (max-width: 1024px) {
   .mobileLogo {

@@ -11,6 +11,8 @@
   display: grid;
   padding-top: 81px;
   justify-items: end;
+  justify-content: end;
+    align-items: start;
 }
 
 .userCard {

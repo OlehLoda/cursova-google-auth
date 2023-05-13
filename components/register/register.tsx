@@ -1,14 +1,12 @@
-import s from "./register.module.css";
 import { FormEvent } from "react";
-import { useGlobalContext } from "../context/context";
+import s from "./register.module.css";
 import { IUser } from "../context/types";
 import { useRouter } from "next/navigation";
+import { useGlobalContext } from "../context/context";
+import placeholder from "../../public/photos/man.png";
 
 export default function Register() {
-  const {
-    state: { registered_users },
-    registerUser,
-  } = useGlobalContext();
+  const { findUser, registerUser } = useGlobalContext();
 
   const { push } = useRouter();
 
@@ -26,9 +24,27 @@ export default function Register() {
         data[name] = value;
       });
 
-    registerUser(data);
+    const user_exist = findUser(data["email"]);
 
-    return push("/login");
+    const password_match = data["password"] === data["password_repeat"];
+
+    const final_data = {
+      ...data,
+      image: placeholder.src,
+      balance: 0,
+      requests: null,
+      callbacks: null,
+      verifications: null,
+    };
+
+    if (user_exist) {
+      return alert("Цей користувач вже зареєстрований");
+    } else if (!password_match) {
+      return alert("Паролі не сходяться");
+    } else {
+      registerUser(final_data);
+      return push("/login");
+    }
   };
 
   return (
@@ -45,29 +61,29 @@ export default function Register() {
             className={s.input}
           />
           <input
-            id="phone"
             required
-            placeholder="Телефон"
-            name="phone"
+            placeholder="Ім'я"
+            name="name"
             type="text"
             className={s.input}
-            onChange={(e) => (e.currentTarget.value = e.currentTarget.value.replace(/\D/gi, ""))}
           />
         </div>
         <div>
           <input
             required
-            placeholder="Пароль"
-            name="password"
+            minLength={8}
             type="password"
+            name="password"
             className={s.input}
+            placeholder="Пароль"
           />
           <input
             required
-            placeholder="Повторіть пароль"
-            name="password_repeat"
+            minLength={8}
             type="password"
             className={s.input}
+            name="password_repeat"
+            placeholder="Повторіть пароль"
           />
         </div>
         <button type="submit" className={s.submit}>

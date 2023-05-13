@@ -21,20 +21,24 @@ export default function Header() {
   const is_active = (link: string) => (pathname === link ? s.active : "");
 
   const {
-    state: { modal, current_user },
+    state: { modal, current_user_email },
     setModal,
-    setCurrentUser,
+    setCurrentUserEmail,
   } = useGlobalContext();
 
   const toggleUserCard = () =>
-    modal?.type !== ModalType.USER_CARD ? setModal({ type: ModalType.USER_CARD }) : setModal(null);
+    modal?.type !== ModalType.USER_CARD
+      ? setModal({ type: ModalType.USER_CARD })
+      : setModal(null);
 
   const toggleCallBack = () =>
-    modal?.type !== ModalType.CALL_BACK ? setModal({ type: ModalType.CALL_BACK }) : setModal(null);
+    modal?.type !== ModalType.CALL_BACK
+      ? setModal({ type: ModalType.CALL_BACK })
+      : setModal(null);
 
   const logOut = () => {
     signOut();
-    setCurrentUser(null);
+    setCurrentUserEmail(null);
   };
 
   const navMap: INavTab[][] = [
@@ -62,7 +66,7 @@ export default function Header() {
         ),
       },
       {
-        children: current_user ? (
+        children: current_user_email ? (
           <div onClick={logOut}>Вихід</div>
         ) : (
           <>
@@ -70,10 +74,14 @@ export default function Header() {
             <ProfileIcon />
           </>
         ),
-        href: current_user ? undefined : "/login",
+        href: current_user_email ? undefined : "/login",
       },
       {
-        children: current_user ? <ProfileIcon onClick={toggleUserCard} /> : <></>,
+        children: current_user_email ? (
+          <ProfileIcon onClick={toggleUserCard} />
+        ) : (
+          <></>
+        ),
       },
     ],
   ];
@@ -82,7 +90,10 @@ export default function Header() {
 
   return (
     <header className={s.header}>
-      <Link href={logo.href!} className={is_active(logo.href!) + " " + s.mobileLogo}>
+      <Link
+        href={logo.href!}
+        className={is_active(logo.href!) + " " + s.mobileLogo}
+      >
         {logo.children}
       </Link>
       <div>

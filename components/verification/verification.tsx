@@ -3,16 +3,20 @@ import s from "./verification.module.css";
 import { useGlobalContext } from "../context/context";
 import Image from "next/image";
 import document_icon from "../../public/photos/document.png";
+import { IVerification } from "../context/types";
+import { useRouter } from "next/navigation";
 
 export default function Verification() {
-  const {} = useGlobalContext();
+  const { findUserData, changeUserData } = useGlobalContext();
+
+  const router = useRouter();
 
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const elements = Array.from(e.currentTarget.elements);
 
-    const data: Record<string, string | number> = {};
+    const data = {} as IVerification;
 
     elements
       .filter((e) => (e as HTMLInputElement).name.length > 0)
@@ -21,16 +25,28 @@ export default function Verification() {
         data[name] = value;
       });
 
-    const final_data = { ...data };
+    const verifications = findUserData("verifications")
+      ? [...findUserData("verifications"), data]
+      : [data];
 
-    return console.log(final_data);
+    changeUserData({ verifications });
+
+    alert("Ваша заявка збережена");
+
+    return router.push("/");
   };
 
   return (
     <div className={s.bg}>
       <form className={s.form} onSubmit={onSubmit}>
-        <h2>Пройти верефікацію</h2>
-        <input required placeholder="Mail" name="mail" type="text" className={s.input} />
+        <h2>Пройти верифікацію</h2>
+        <input
+          required
+          placeholder="Mail"
+          name="email"
+          type="email"
+          className={s.input}
+        />
         <input
           required
           placeholder="Посада/досвід"
@@ -39,7 +55,12 @@ export default function Verification() {
           className={s.input}
         />
         <label className={s.upload}>
-          <Image src={document_icon.src} alt="certificate" width={50} height={50} />
+          <Image
+            src={document_icon.src}
+            alt="certificate"
+            width={50}
+            height={50}
+          />
           Завантажити сертифікат
           <input type="file" name="certificate" />
         </label>

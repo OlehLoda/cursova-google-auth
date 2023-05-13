@@ -12,7 +12,7 @@ interface IChangePasswordStep {
 }
 
 export default function LogIn() {
-  const { findUser, setCurrentUser, changePassword } = useGlobalContext();
+  const { findUser, changeUserData, setCurrentUserEmail } = useGlobalContext();
 
   const [resetPass, setResetPass] = useState<IChangePasswordStep | null>(null);
 
@@ -44,19 +44,22 @@ export default function LogIn() {
       (data["password"] as string) === (data["password_repeat"] as string);
 
     if (!action && user_exist) {
-      const is_password_correct = user_exist.password === (data["password"] as string);
-      return is_password_correct ? setCurrentUser(user_exist) : alert("Wrong password");
+      const is_password_correct =
+        user_exist.password === (data["password"] as string);
+      return is_password_correct
+        ? setCurrentUserEmail(user_exist.email)
+        : alert("Wrong password");
     } else if (action === 1 && user_exist) {
       setResetPass({ step: 2, email: data["email"] as string });
     } else if (action === 2 && user_exist && is_password_correct) {
-      changePassword({
-        user: user_exist,
+      changeUserData({
         password: data["password"] as string,
+        password_repeat: data["password_repeat"] as string,
       });
       setResetPass(null);
       alert("Пароль змінено");
       return;
-    } else if (action === 2) {
+    } else if (action === 2 && !is_password_correct) {
       return alert("Паролі відрізняються");
     } else return alert("Користувач не знайдений. Перевірте введені дані");
   };
@@ -80,7 +83,14 @@ export default function LogIn() {
               type="email"
               className={s.input}
             />
-            <input required placeholder="Пароль" name="password" type="text" className={s.input} />
+            <input
+              required
+              placeholder="Пароль"
+              name="password"
+              type="password"
+              minLength={8}
+              className={s.input}
+            />
           </div>
           <div>
             <button type="submit" className={s.submit}>
@@ -97,7 +107,11 @@ export default function LogIn() {
         </form>
       )}
       {resetPass?.step === 1 && (
-        <form className={s.form} onSubmit={(e) => onSubmit(e, 1)} onReset={stepBack}>
+        <form
+          className={s.form}
+          onSubmit={(e) => onSubmit(e, 1)}
+          onReset={stepBack}
+        >
           <button type="reset" className={s.back}>
             <ArrowIcon />
           </button>
@@ -117,7 +131,11 @@ export default function LogIn() {
         </form>
       )}
       {resetPass?.step === 2 && (
-        <form className={s.form} onSubmit={(e) => onSubmit(e, 2)} onReset={stepBack}>
+        <form
+          className={s.form}
+          onSubmit={(e) => onSubmit(e, 2, resetPass.email)}
+          onReset={stepBack}
+        >
           <button type="reset" className={s.back}>
             <ArrowIcon />
           </button>

@@ -8,21 +8,26 @@ import { ModalType } from "@/components/context/types";
 
 export default function UserCard() {
   const {
-    state: { current_user, modal },
+    state: { current_user_email, modal },
     setModal,
-    setBalance,
+    findUserData,
+    changeUserData,
   } = useGlobalContext();
-  if (!current_user) return <></>;
-  const { name, email, image, balance } = current_user;
+  if (!current_user_email) return <></>;
+
+  const balance = findUserData("balance"),
+    image = findUserData("image"),
+    name = findUserData("name"),
+    email = findUserData("email");
 
   const withdraw = () => {
     const newBalance = balance !== 0 ? balance - 50 : 0;
-    return setBalance(newBalance);
+    return changeUserData({ balance: newBalance });
   };
 
   const deposit = () => {
     const newBalance = balance + 50;
-    return setBalance(newBalance);
+    return changeUserData({ balance: newBalance });
   };
 
   const close = () => setModal(null);
@@ -31,7 +36,13 @@ export default function UserCard() {
     <div className={s.bg + " " + s.weight} onClick={close}>
       <div className={s.userCard} onClick={(e) => e.stopPropagation()}>
         {image ? (
-          <Image width={74} height={74} src={image} alt="Google avatar" className={s.avatar} />
+          <Image
+            width={74}
+            height={74}
+            src={image}
+            alt="Google avatar"
+            className={s.avatar}
+          />
         ) : (
           <AvatarIcon className={s.avatar} width={74} height={74} />
         )}

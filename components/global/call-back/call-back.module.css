@@ -70,6 +70,8 @@
 }
 
 .submit {
+  cursor: pointer;
+
   width: 280px;
   height: 46px;
 

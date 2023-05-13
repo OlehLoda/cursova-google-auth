@@ -5,7 +5,7 @@ import Requests from "@/components/requests/requests";
 
 export default function RequestsPage() {
   const {
-    state: { current_user },
+    state: { current_user_email },
   } = useGlobalContext();
-  return current_user ? <Requests /> : <Empty />;
+  return current_user_email ? <Requests /> : <Empty />;
 }

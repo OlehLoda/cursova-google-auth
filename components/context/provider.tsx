@@ -1,23 +1,19 @@
 "use client";
 
-import { ReactNode, useReducer, useEffect } from "react";
 import { GlobalReducer, Action } from "./reducer";
-import { IChangePasswordDTO, IInitialState, IModal, IRequest, IUser } from "./types";
+import { IInitialState, IModal, IUser } from "./types";
 import { GlobalContext, InitialState } from "./context";
+import { ReactNode, useReducer, useEffect } from "react";
 
-export default function GlobalContextProvider({ children }: { children: ReactNode }) {
+export default function GlobalContextProvider({
+  children,
+}: {
+  children: ReactNode;
+}) {
   const [state, dispatch] = useReducer(GlobalReducer, InitialState);
 
   const setModal = (payload: IModal | null) => {
     return dispatch({ type: Action.SET_MODAL, payload });
-  };
-
-  const setRequest = (payload: IRequest[] | null) => {
-    return dispatch({ type: Action.SET_REQUEST, payload });
-  };
-
-  const setBalance = (payload: number) => {
-    return dispatch({ type: Action.SET_BALANCE, payload });
   };
 
   const setData = (payload: IInitialState) => {
@@ -28,8 +24,12 @@ export default function GlobalContextProvider({ children }: { children: ReactNod
     return dispatch({ type: Action.REGISTER_USER, payload });
   };
 
-  const setCurrentUser = (payload: IUser | null) => {
-    return dispatch({ type: Action.SET_CURRENT_USER, payload });
+  const setCurrentUserEmail = (payload: string | null) => {
+    return dispatch({ type: Action.SET_CURRENT_USER_EMAIL, payload });
+  };
+
+  const changeUserData = (payload: Partial<IUser>) => {
+    return dispatch({ type: Action.CHANGE_USER_DATA, payload });
   };
 
   const saveDataToDB = () => {
@@ -45,19 +45,20 @@ export default function GlobalContextProvider({ children }: { children: ReactNod
   };
 
   const findUser = (email: string) => {
-    if (state.registered_users.length === 0) {
+    if (!state.registered_users) {
       return undefined;
     } else return state.registered_users.find((user) => user.email === email);
   };
 
-  const changePassword = (payload: IChangePasswordDTO) => {
-    return dispatch({ type: Action.CHANGE_PASSWORD, payload });
-  };
+  const findUserData = (field: string) =>
+    state?.registered_users?.find(
+      (user) => user.email === state.current_user_email
+    )?.[field];
 
   useEffect(() => getDataFromDB(), []);
   useEffect(() => saveDataToDB(), [state]);
 
-  console.log(state.current_user);
+  console.log(state);
 
   return (
     <GlobalContext.Provider
@@ -66,11 +67,10 @@ export default function GlobalContextProvider({ children }: { children: ReactNod
         dispatch,
         findUser,
         setModal,
-        setBalance,
-        setRequest,
         registerUser,
-        setCurrentUser,
-        changePassword,
+        changeUserData,
+        findUserData,
+        setCurrentUserEmail,
       }}
     >
       {children}
