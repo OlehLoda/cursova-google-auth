@@ -5,19 +5,26 @@ import { IRequest } from "@/components/context/types";
 import LoadMoreIcon from "../../../public/icons/load-more";
 import { useGlobalContext } from "@/components/context/context";
 
+// компонента RequestsList вертає заголовок, список заявок, якщо такі є та кнопку "Завантажити ще"
 export default function RequestsList() {
+  // витягаємо потрібні дані і функції з глобального конексту
   const {
     state: { current_user_email },
     findUserData,
     changeUserData,
   } = useGlobalContext();
+  // якщо немає активного юзера, повертаємо пустий фрагмент
   if (!current_user_email) return <></>;
 
+  // ініціалізуємо потрібні дані
   const balance: number = findUserData("balance"),
     requests: IRequest[] = findUserData("requests");
 
+  // ініціалізуємо стейт для поступового відображення заявок
   const [quantity, setQuantity] = useState<number>(2);
 
+  // функція, яка видаляє заявку з масиву заявок та
+  // додає вартість заявки до балансу користувача
   const completeRequest = (request: IRequest) => {
     const new_data = requests
       ? [...requests.filter((r) => r !== request)].length !== 0

@@ -5,6 +5,7 @@ import { useGlobalContext } from "@/components/context/context";
 import { ICallback, ModalType } from "@/components/context/types";
 
 export default function CallBack() {
+  // витягаємо потрібні дані і функції з глобального конексту
   const {
     state: { modal },
     setModal,
@@ -12,13 +13,18 @@ export default function CallBack() {
     changeUserData,
   } = useGlobalContext();
 
+  // функція onSubmit для обробки даних форми зворотнього зв'язку
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    // запобігає перезавантаженню вікна
     e.preventDefault();
 
+    // збираємо всі елементи форми
     const elements = Array.from(e.currentTarget.elements);
 
+    // ініціалізуємо пустий об'єкт
     const data = {} as ICallback;
 
+    // перебираємо всі елементи форми і записуємо їх дані в об'єкт data
     elements
       .filter((e) => (e as HTMLInputElement).name.length > 0)
       .forEach((el) => {
@@ -26,19 +32,25 @@ export default function CallBack() {
         data[name] = value;
       });
 
+    // перевіряємо, чи вже створений масив callbacks в нашого юзера,
+    // якшо так, то допушуємо в нього, якщо ні створюємо новий
     const callbacks = findUserData("callbacks")
       ? [...findUserData("callbacks"), data]
       : [data];
 
+    // передаємо змінений масив callbacks в стейт
     changeUserData({ callbacks });
 
     alert("Ваше звернення збережене");
 
+    // закриваємо вікно зворотнього зв'язку
     return setModal(null);
   };
 
+  // функція close для закриття вікна зворотнього зв'язку
   const close = () => setModal(null);
 
+  // поветраємо вікно зворотнього зв'язку, якщо тип modal правильний
   return modal?.type === ModalType.CALL_BACK ? (
     <div className={s.bg + " " + s.weight} onClick={close}>
       <form

@@ -6,16 +6,23 @@ import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import man from "../../public/photos/man.png";
 
+// сторінка для авторизації
 export default function LoginPage() {
+  // витягаємо потрібні дані і функції з глобального конексту
   const {
     state: { current_user_email },
     findUser,
     registerUser,
     setCurrentUserEmail,
   } = useGlobalContext();
+
+  // записуємо дані з хука useRouter в змінну router
   const router = useRouter();
+  // записуємо дані з хука useSession в змінну session
   const { data: session } = useSession();
 
+  // хук useEffect, в якому виконується реєстрація нового юзера з Гугл автентифікацією
+  // і редірект залогіненого юзера на головну сторінку
   useEffect(() => {
     if (current_user_email) {
       return router.push("/");
@@ -47,5 +54,6 @@ export default function LoginPage() {
     } else return;
   }, [current_user_email, session]);
 
+  // повертаємо компоненту LogIn для цієї сторінки
   return <LogIn />;
 }

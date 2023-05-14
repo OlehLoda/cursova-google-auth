@@ -4,6 +4,7 @@ import FacebookIcon from "@/public/icons/facebook";
 import InstagramIcon from "@/public/icons/instagram";
 import Link from "next/link";
 
+// компонента Footer з посиланнями на інші сторінки
 export default function Footer() {
   return (
     <footer className={s.footer}>

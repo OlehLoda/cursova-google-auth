@@ -5,12 +5,14 @@ import man from "../../../../public/photos/man.png";
 import money from "../../../../public/photos/money.png";
 import Image from "next/image";
 
+// інтерфейс об'єкту для масиву
 interface IListItem {
   image: JSX.Element;
   text: string;
 }
 
 export default function List() {
+  // масив даних для списку "Як це працює"
   const arr: IListItem[] = [
     {
       image: <Image src={document} alt="document icon" />,
@@ -32,6 +34,7 @@ export default function List() {
 
   return (
     <ul className={s.list}>
+      {/* рендер списку */}
       {arr.map(({ image, text }, index) => (
         <li key={index}>
           <h3>{index + 1}</h3>

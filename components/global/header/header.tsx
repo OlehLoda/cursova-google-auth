@@ -16,31 +16,37 @@ interface INavTab {
   href?: string;
 }
 
+// компонента Header з посиланнями на інші сторінки
 export default function Header() {
   const pathname = usePathname();
   const is_active = (link: string) => (pathname === link ? s.active : "");
 
+  // витягаємо потрібні дані і функції з глобального конексту
   const {
     state: { modal, current_user_email },
     setModal,
     setCurrentUserEmail,
   } = useGlobalContext();
 
+  // функція для відкриття профілю юзера
   const toggleUserCard = () =>
     modal?.type !== ModalType.USER_CARD
       ? setModal({ type: ModalType.USER_CARD })
       : setModal(null);
 
+  // функція для відкриття форми зворотнього зв'язку
   const toggleCallBack = () =>
     modal?.type !== ModalType.CALL_BACK
       ? setModal({ type: ModalType.CALL_BACK })
       : setModal(null);
 
+  // функція для виходу з аккаунту
   const logOut = () => {
     signOut();
     setCurrentUserEmail(null);
   };
 
+  // масив з усіма кнопками в хедері
   const navMap: INavTab[][] = [
     [
       {
@@ -86,16 +92,20 @@ export default function Header() {
     ],
   ];
 
+  // кнопка з логотипом
   const logo = navMap[0][0];
 
   return (
     <header className={s.header}>
+      {/* відображаємо логотип окремо на мобільній версії для відкривання меню */}
       <Link
         href={logo.href!}
         className={is_active(logo.href!) + " " + s.mobileLogo}
       >
         {logo.children}
       </Link>
+
+      {/* рендер всіх кнопок */}
       <div>
         {navMap.map((nav, index) => (
           <nav key={index}>
@@ -111,9 +121,12 @@ export default function Header() {
           </nav>
         ))}
       </div>
+
       <UserCard />
+
       <CallBack />
 
+      {/* кнопка для відкривання меню */}
       <label className={s.burger}>
         <input type="checkbox" />
       </label>

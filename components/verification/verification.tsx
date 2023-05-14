@@ -6,18 +6,26 @@ import document_icon from "../../public/photos/document.png";
 import { IVerification } from "../context/types";
 import { useRouter } from "next/navigation";
 
+// компонента Verification вертає форму заявки на верифікацію
 export default function Verification() {
+  // витягаємо потрібні дані і функції з глобального конексту
   const { findUserData, changeUserData } = useGlobalContext();
 
+  // записуємо дані з хука useRouter в змінну router
   const router = useRouter();
 
+  // функція onSubmit для керування даними форми
   const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    // запобігаємо перезавантаженню сторінки
     e.preventDefault();
 
+    // збираємо елементи форми
     const elements = Array.from(e.currentTarget.elements);
 
+    // ініціалізуємо пустий об'єкт
     const data = {} as IVerification;
 
+    // перебираємо елементи форми та заповнюємо об'єкт data
     elements
       .filter((e) => (e as HTMLInputElement).name.length > 0)
       .forEach((el) => {
@@ -25,14 +33,19 @@ export default function Verification() {
         data[name] = value;
       });
 
+    // перевіряємо чи масив verifications вже існує
+    // і можна пушити в нього, чи потрібно створити новий
     const verifications = findUserData("verifications")
       ? [...findUserData("verifications"), data]
       : [data];
 
+    // відправляємо дані форми в глобальний стейт
     changeUserData({ verifications });
 
+    // повідомляємо про успішність виконання
     alert("Ваша заявка збережена");
 
+    // відпраляємо на головну сторінку
     return router.push("/");
   };
 
